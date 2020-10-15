@@ -3,6 +3,7 @@
 import struct
 import numpy as np
 from numpy import arccos, arctan2 
+from linearAlgebra import *
 
 def color(r, g, b):
     return bytes([int(b * 255), int(g * 255), int(r * 255)])
@@ -101,13 +102,9 @@ class Envmap(object):
 
     def getColor(self, direction):
 
-        direction = direction / np.linalg.norm(direction)
+        direction = normalizado(direction) 
 
-        x = int( (arctan2( direction[2], direction[0]) / (2 * np.pi) + 0.5) * self.width)
-        y = int( arccos(-direction[1]) / np.pi * self.height )
+        x = int( (arctan2( direction[2], direction[0]) / (2 * pi) + 0.5) * self.width)
+        y = int( arccos(-direction[1]) / pi * self.height )
 
         return self.pixels[y][x]
-
-
-
-
