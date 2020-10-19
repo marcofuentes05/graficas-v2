@@ -13,4 +13,4 @@ Para ejecutar la entrega, en la consola es encesario ejecutar
 
 ## Resultados
 
-![Resultado](./Resultado.png "El sol en vitrina")
+![Resultado](./Resultado.png "Resultado")
