@@ -6,7 +6,7 @@ Repositorio usado para presentar entregas del segundo proyecto para el curso de 
 
 Para ejecutar la entrega, en la consola es encesario ejecutar 
 ```
-~/ python3 RC1.py
+~/ python3 RC2.py
 ```
 
 ![Comandos](./Comandos.png "Comandos")
