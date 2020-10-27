@@ -73,7 +73,7 @@ class Raycaster(object):
         self.screen.blit(tex, rect)
 
     def drawPlayerIcon(self, color):
-        rect = (self.player['x'] - 2, self.player['y'] - 2, 5, 5)
+        rect = (int(self.player['x'] - 2), int(self.player['y'] - 2), 5, 5)
         self.screen.fill(color, rect)
 
     def castRay(self, a):
@@ -170,7 +170,7 @@ while isRunning:
         if r.gameState['screen'] == 'game':
             if ev.type == pygame.KEYDOWN:
                 if ev.key == pygame.K_ESCAPE:
-                    isRunning = False
+                    r.changeScreen()
                 elif ev.key == pygame.K_w:
                     r.player['x'] += cos(r.player['angle'] * pi / 180) * r.stepSize
                     r.player['y'] += sin(r.player['angle'] * pi / 180) * r.stepSize
@@ -191,7 +191,6 @@ while isRunning:
                     r.player['angle'] -= 5
                 elif ev.key == pygame.K_e:
                     r.player['angle'] += 5
-
                 i = int(r.player['x'] / r.blocksize)
                 j = int(r.player['y'] / r.blocksize)
 
