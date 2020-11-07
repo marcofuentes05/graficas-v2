@@ -7,9 +7,9 @@ BACKGROUND = (64, 64, 64)
 SPRITE_BACKGROUND = (152, 0, 136, 255)
 
 textures = {
-    '1': pygame.image.load('./Assets/Textures/wall1.png'),
-    '2': pygame.image.load('./Assets/Textures/wall2.png'),
-    '3': pygame.image.load('./Assets/Textures/wall3.png'),
+    '1': pygame.image.load('./Assets/Textures/wall1.jpg'),
+    '2': pygame.image.load('./Assets/Textures/wall2.jpg'),
+    '3': pygame.image.load('./Assets/Textures/wall.jpg'),
     '4': pygame.image.load('./Assets/Textures/wall4.png'),
     '5': pygame.image.load('./Assets/Textures/wall5.png')
 }
@@ -24,15 +24,15 @@ colors = {
 
 enemies = [{"x": 100,
             "y": 200,
-            "texture": pygame.image.load('./Assets/Sprites/sprite1.png')},
+            "texture": pygame.image.load('./Assets/Sprites/zombie.png')},
 
            {"x": 270,
             "y": 200,
-            "texture": pygame.image.load('./Assets/Sprites/sprite2.png')},
+            "texture": pygame.image.load('./Assets/Sprites/zombie.png')},
 
            {"x": 320,
             "y": 420,
-            "texture": pygame.image.load('./Assets/Sprites/sprite3.png')}
+            "texture": pygame.image.load('./Assets/Sprites/zombie.png')}
            ]
 
 class Raycaster(object):
@@ -172,13 +172,13 @@ class Raycaster(object):
             halfHeight = int(self.height / 2)
 
             # Draw walls
-            # for x in range(0, halfWidth, self.blocksize):
-            #     for y in range(0, self.height, self.blocksize):
-            #         i = int(x/self.blocksize)
-            #         j = int(y/self.blocksize)
-            #         if self.map[j][i] != ' ':
-            #             self.drawRect(x, y, textures[self.map[j][i]])
-            # self.drawPlayerIcon(BLACK)
+            for x in range(0, halfWidth, self.blocksize):
+                for y in range(0, self.height, self.blocksize):
+                    i = int(x/self.blocksize)
+                    j = int(y/self.blocksize)
+                    if self.map[j][i] != ' ':
+                        self.drawRect(x, y, textures[self.map[j][i]])
+            self.drawPlayerIcon(BLACK)
 
             # Draw FPS
             for i in range(halfWidth):
@@ -223,13 +223,13 @@ class Raycaster(object):
             halfHeight = int(self.height / 2)
 
             # Draw walls
-            # for x in range(0, halfWidth, self.blocksize):
-            #     for y in range(0, self.height, self.blocksize):
-            #         i = int(x/self.blocksize)
-            #         j = int(y/self.blocksize)
-            #         if self.map[j][i] != ' ':
-            #             self.drawRect(x, y, textures[self.map[j][i]])
-            # self.drawPlayerIcon(BLACK)
+            for x in range(0, halfWidth, self.blocksize):
+                for y in range(0, self.height, self.blocksize):
+                    i = int(x/self.blocksize)
+                    j = int(y/self.blocksize)
+                    if self.map[j][i] != ' ':
+                        self.drawRect(x, y, textures[self.map[j][i]])
+            self.drawPlayerIcon(BLACK)
 
             # Draw FPS
             for i in range(halfWidth):
