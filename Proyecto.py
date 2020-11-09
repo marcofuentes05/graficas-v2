@@ -24,15 +24,15 @@ colors = {
 
 enemies = [{"x": 100,
             "y": 200,
-            "texture": pygame.image.load('./Assets/Sprites/zombie.png')},
+            "texture": pygame.image.load('./Assets/Sprites/goomba.png')},
 
            {"x": 270,
             "y": 200,
-            "texture": pygame.image.load('./Assets/Sprites/zombie.png')},
+            "texture": pygame.image.load('./Assets/Sprites/goomba.png')},
 
            {"x": 320,
             "y": 420,
-            "texture": pygame.image.load('./Assets/Sprites/zombie.png')}
+            "texture": pygame.image.load('./Assets/Sprites/goomba.png')}
            ]
 
 class Raycaster(object):
@@ -139,7 +139,7 @@ class Raycaster(object):
                         tx = int( (x - startX) * sprite["texture"].get_width() / spriteWidth )
                         ty = int( (y - startY) * sprite["texture"].get_height() / spriteHeight )
                         texColor = sprite["texture"].get_at((tx, ty))
-                        if texColor[3] > 128 and texColor != SPRITE_BACKGROUND:
+                        if not (texColor[2] == texColor[1] == texColor[0]): # and texColor != SPRITE_BACKGROUND:
                             self.screen.set_at((x,y), texColor)
                             self.zbuffer[ x - int(self.width/2)] = spriteDist
 
