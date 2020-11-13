@@ -18,7 +18,7 @@ Esta entrega presenta un objeto que puede ser trasladado y rotado con inputs del
 
 Para ejecutar la entrega, en la consola es encesario ejecutar 
 ```
-~/ python3 Proyecto.py
+~/ python3 openGL1.py
 ```
 
 ![Comandos](./Comandos.png "Comandos")
