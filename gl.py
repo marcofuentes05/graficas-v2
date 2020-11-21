@@ -2,37 +2,7 @@ from OpenGL.GL import *
 from OpenGL.GL.shaders import compileProgram, compileShader
 import glm
 import numpy as np
-
-
-                     # VERTS           COLOR
-rectVerts = np.array([ 0.8, 0.8, 0.8,  1,0,0.3, 
-                       0.5,-0.5, 0.5,  0.9,1,0.4, 
-                      -0.3,-0.3, 0.3,  0.8,0,0.5, 
-                      -0.5, 0.5, 0.5,  0.7,1,0.6,
-                       0.7, 0.7,-0.7,  0.6,0,0.7,
-                       0.1,-0.1,-0.1,  0.5,1,0.8,
-                      -0.5,-0.5,-0.5,  0.4,1,0.9,
-                      -0.8, 0.8,-0.8,  0.3,0,1, 
-                      ], dtype=np.float32)
-
-rectIndices = np.array([ #front
-                         0, 1, 3,
-                         1, 2, 3,
-                         #left
-                         4, 5, 0,
-                         5, 1, 0,
-                         #back
-                         7, 6, 4,
-                         6, 5, 4,
-                         #right
-                         3, 2, 7,
-                         2, 6, 7,
-                         #top
-                         1, 5, 2,
-                         5, 6, 2,
-                         #bottom
-                         4, 0, 7,
-                         0, 3, 7], dtype=np.uint32)
+import math
 
 class Renderer(object):
     def __init__(self, screen):
@@ -41,30 +11,41 @@ class Renderer(object):
         glEnable(GL_DEPTH_TEST)
         glViewport(0, 0, self.width, self.height)
 
-        # Perspective Projection Matrix (PPM)
+        self.temp = 0 
+        self.modelList = []
+        self.camPosition = glm.vec3(0,0,0)
+        self.camRotation = glm.vec3(0,0,0)
+        self.pointLight = glm.vec4(0,0,0,0)
         self.projection = glm.perspective(glm.radians(60), self.width / self.height, 0.1, 1000)
-        self.cubePos = glm.vec3(0,0,0)
-        self.objYaw= 0
-        self.objPitch = 0
-        self.objRoll = 0
+        self.viewMatrix = self.getViewMatrix()
+        self.angle = 90
+
+    def getViewMatrix(self):
+        i = glm.mat4(1)
+        camTranslate = glm.translate(i, self.camPosition)
+        camPitch = glm.rotate(i, glm.radians( self.camRotation.x ), glm.vec3(1,0,0))
+        camYaw   = glm.rotate(i, glm.radians( self.camRotation.y ), glm.vec3(0,1,0))
+        camRoll  = glm.rotate(i, glm.radians( self.camRotation.z ), glm.vec3(0,0,1))
+        camRotate = camPitch * camYaw * camRoll
+        return glm.inverse( camTranslate * camRotate )
+    
+    def polarCoords(self):
+        x = self.camPosition.x
+        z = self.camPosition.z
+        r = (x**2 + z**2)**0.5
+        self.camPosition.x = r * math.cos(self.angle * math.pi / 180)
+        self.camPosition.z = r * math.sin(self.angle * math.pi / 180)
+
+    def camOrbit(self):
+        vect = glm.vec3(0,1,0)
+        camTranslate = glm.vec3(self.camPosition[0], self.camPosition[1] , self.camPosition[2] )
+        self.viewMatrix = glm.lookAt(camTranslate , self.modelList[0].position , vect)
 
     def wireframeMode(self):
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
 
     def filledMode(self):
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
-
-    def translateCube(self, x, y, z):
-        self.cubePos = glm.vec3(x,y,z)
-
-    def rotateYaw(self):
-        self.objYaw += 5
-    
-    def rotatePitch(self):
-        self.objPitch += 5
-
-    def rotateRoll(self):
-        self.objRoll += 5
 
     def setShaders(self, vertexShader, fragShader):
         if vertexShader is not None or fragShader is not None:
@@ -73,51 +54,16 @@ class Renderer(object):
             self.active_shader = None
         glUseProgram(self.active_shader)
 
-    def createObjects(self):
-        self.VBO = glGenBuffers(1) #Vertex Buffer Object
-        self.EBO = glGenBuffers(1) #Element Buffer Object
-        self.VAO = glGenVertexArrays(1) #Vertex Array Object
-
-        glBindVertexArray(self.VAO)
-        glBindBuffer(GL_ARRAY_BUFFER, self.VBO)
-        glBufferData(GL_ARRAY_BUFFER, rectVerts.nbytes, rectVerts, GL_STATIC_DRAW)
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.EBO)
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, rectIndices.nbytes, rectIndices, GL_STATIC_DRAW)
-
-        # Atributo de posicion de vertices
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 4 * 6, ctypes.c_void_p(0))
-        glEnableVertexAttribArray(0)
-        
-        # Atributo de color de vertices
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 4 * 6, ctypes.c_void_p(4 * 3))
-        glEnableVertexAttribArray(1)
-
     def render(self):
         glClearColor(0.2, 0.2, 0.2, 1)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT )
-        i = glm.mat4(1)
-        translate = glm.translate(i, self.cubePos)
-        pitch = glm.rotate(i, glm.radians( self.objPitch ), glm.vec3(1,0,0))
-        yaw   = glm.rotate(i, glm.radians( self.objYaw ), glm.vec3(0,1,0))
-        roll  = glm.rotate(i, glm.radians( self.objRoll ), glm.vec3(0,0,1))
-        rotate = pitch * yaw * roll
-        scale = glm.scale(i, glm.vec3(1,1,1))
-        model = translate * rotate * scale
-        
-        # View Matrix
-        # glm.lookAt( eye, center, up)
-        camTranslate = glm.translate(i, glm.vec3( 0, 0, 3))
-        camPitch = glm.rotate(i, glm.radians( 0 ), glm.vec3(1,0,0))
-        camYaw   = glm.rotate(i, glm.radians( 0 ), glm.vec3(0,1,0))
-        camRoll  = glm.rotate(i, glm.radians( 0 ), glm.vec3(0,0,1))
-        camRotate = camPitch * camYaw * camRoll
-        view = glm.inverse( camTranslate * camRotate )
-
-
         if self.active_shader:
-            glUniformMatrix4fv(glGetUniformLocation(self.active_shader, "model"),1, GL_FALSE, glm.value_ptr( model ))
-            glUniformMatrix4fv(glGetUniformLocation(self.active_shader, "view"),1, GL_FALSE, glm.value_ptr( view ))
-            glUniformMatrix4fv(glGetUniformLocation(self.active_shader, "projection"),1, GL_FALSE, glm.value_ptr( self.projection ))
-        glBindVertexArray(self.VAO)
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, None)
-        glBindVertexArray(0)
+            glUniformMatrix4fv(glGetUniformLocation(self.active_shader, "view"), 1, GL_FALSE, glm.value_ptr( self.viewMatrix ))
+            glUniformMatrix4fv(glGetUniformLocation(self.active_shader, "projection"), 1, GL_FALSE, glm.value_ptr( self.projection ))
+            glUniform4f(glGetUniformLocation(self.active_shader, "light"), self.pointLight.x, self.pointLight.y, self.pointLight.z, self.pointLight.w)
+            glUniform4f(glGetUniformLocation(self.active_shader, "color"), 1, 1, 1, 1)
+        for model in self.modelList:
+            if self.active_shader:
+                # pass
+                glUniformMatrix4fv(glGetUniformLocation(self.active_shader, "model"), 1, GL_FALSE, glm.value_ptr(model.getMatrix()))
+            model.renderInScene()
