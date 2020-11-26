@@ -23,10 +23,11 @@ r.pointLight.y = 5
 
 r.setShaders(shaders.vertex_shader, shaders.fragment_shader)
 rotateSpeed = 80
-r.modelList.append(Model('./Assets/OBJs/coca.obj', './Assets/Textures/white.jpg'))
+r.modelList.append(Model('./Assets/OBJs/coca.obj', './Assets/Textures/green.jpg', 4))
 r.modelList[0].scale = glm.vec3(0.01, 0.01, 0.01)
-
-
+r.modelList.append(Model('./Assets/OBJs/model.obj', './Assets/Textures/green.jpg', 3))
+r.modelList.append(Model('./Assets/OBJs/helmet.obj', './Assets/Textures/green.jpg', 3))
+r.modelList.append(Model('./Assets/OBJs/planta.obj', './Assets/Textures/planta.jpg', 4))
 isPlaying = True
 while isPlaying:
     keys = pygame.key.get_pressed()
@@ -44,6 +45,8 @@ while isPlaying:
     if keys[K_e]:
         if (2 <= r.camPosition.z):
             r.camPosition.z -= 1 * deltaTime
+    # if keys[K_r]:
+    #     r.modelList[r.index].textureIndex = (r.modelList[r.index].textureIndex + 1)  % 4
     for ev in pygame.event.get():
         if ev.type == pygame.QUIT:
             isPlaying = False
@@ -52,9 +55,12 @@ while isPlaying:
                 r.filledMode()
             elif ev.key == pygame.K_2:
                 r.wireframeMode()
+            elif ev.key == pygame.K_3:
+                r.index = (r.index + 1) %4
             elif ev.key == pygame.K_ESCAPE:
                 isPlaying = False
-    # r.getViewMatrix()
+            elif ev.key == pygame.K_r:
+                r.modelList[r.index].textureIndex = (r.modelList[r.index].textureIndex + 1)  % 4
     r.polarCoords()
     r.camOrbit()
     r.render()

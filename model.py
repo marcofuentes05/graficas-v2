@@ -6,12 +6,16 @@ import numpy as np
 from obj import Obj
 
 class Model(object):
-    def __init__(self, fileName, textureName):
+    def __init__(self, fileName, textureName, numFaces):
         self.model = Obj(fileName)
 
+        self.numFaces = numFaces
         self.createVertBuffer()
 
-        self.texture_surface = pygame.image.load(textureName)
+        self.textures = [textureName,'./Assets/Textures/white.jpg' , './Assets/Textures/red.png', './Assets/Textures/blue.jpg']
+        self.textureIndex = 0
+
+        self.texture_surface = pygame.image.load(self.textures[self.textureIndex])
         self.texture_data = pygame.image.tostring(
             self.texture_surface, "RGB", 1)
         self.texture = glGenTextures(1)
@@ -19,6 +23,7 @@ class Model(object):
         self.position = glm.vec3(0, 0, 0)
         self.rotation = glm.vec3(0, 0, 0)  # pitch, yaw, roll
         self.scale = glm.vec3(1, 1, 1)
+
 
     def getMatrix(self):
         i = glm.mat4(1)
@@ -34,7 +39,7 @@ class Model(object):
         buffer = []
 
         for face in self.model.faces:
-            for i in range(4):
+            for i in range(self.numFaces):
                 try:
                     #verts
                     buffer.append(self.model.vertices[face[i][0] - 1][0])
@@ -85,8 +90,15 @@ class Model(object):
 
         # Dar textura
         glBindTexture(GL_TEXTURE_2D, self.texture)
+
+        self.texture_surface = pygame.image.load(self.textures[self.textureIndex])
+        self.texture_data = pygame.image.tostring(
+            self.texture_surface, "RGB", 1)
+
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, self.texture_surface.get_width(
         ), self.texture_surface.get_height(), 0, GL_RGB, GL_UNSIGNED_BYTE, self.texture_data)
         glGenerateMipmap(GL_TEXTURE_2D)
-
-        glDrawArrays(GL_QUADS, 0, len(self.model.faces) * 4)
+        if (self.numFaces == 4):
+            glDrawArrays(GL_QUADS, 0, len(self.model.faces) * self.numFaces)
+        elif (self.numFaces == 3):
+            glDrawArrays(GL_TRIANGLES, 0, len(self.model.faces) * self.numFaces)

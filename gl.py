@@ -19,6 +19,7 @@ class Renderer(object):
         self.projection = glm.perspective(glm.radians(60), self.width / self.height, 0.1, 1000)
         self.viewMatrix = self.getViewMatrix()
         self.angle = 90
+        self.index = 0
 
     def getViewMatrix(self):
         i = glm.mat4(1)
@@ -62,8 +63,6 @@ class Renderer(object):
             glUniformMatrix4fv(glGetUniformLocation(self.active_shader, "projection"), 1, GL_FALSE, glm.value_ptr( self.projection ))
             glUniform4f(glGetUniformLocation(self.active_shader, "light"), self.pointLight.x, self.pointLight.y, self.pointLight.z, self.pointLight.w)
             glUniform4f(glGetUniformLocation(self.active_shader, "color"), 1, 1, 1, 1)
-        for model in self.modelList:
-            if self.active_shader:
-                # pass
-                glUniformMatrix4fv(glGetUniformLocation(self.active_shader, "model"), 1, GL_FALSE, glm.value_ptr(model.getMatrix()))
-            model.renderInScene()
+        if self.active_shader:
+            glUniformMatrix4fv(glGetUniformLocation(self.active_shader, "model"), 1, GL_FALSE, glm.value_ptr(self.modelList[self.index].getMatrix()))
+        self.modelList[self.index].renderInScene()
