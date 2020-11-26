@@ -5,6 +5,7 @@ from gl import Renderer
 from model import Model
 from obj import Obj
 import shaders
+import glm
 
 deltaTime = 0.0
 
@@ -14,8 +15,8 @@ screenSize = (500, 500)
 screen = pygame.display.set_mode(screenSize, DOUBLEBUF | OPENGL)
 
 r = Renderer(screen)
-r.camPosition.z = 50
-r.camPosition.y= 50
+r.camPosition.z = 5
+r.camPosition.y= 5
 
 r.pointLight.z = 5
 r.pointLight.y = 5
@@ -23,6 +24,7 @@ r.pointLight.y = 5
 r.setShaders(shaders.vertex_shader, shaders.fragment_shader)
 rotateSpeed = 80
 r.modelList.append(Model('./Assets/OBJs/coca.obj', './Assets/Textures/white.jpg'))
+r.modelList[0].scale = glm.vec3(0.01, 0.01, 0.01)
 
 
 isPlaying = True
@@ -52,11 +54,11 @@ while isPlaying:
                 r.wireframeMode()
             elif ev.key == pygame.K_ESCAPE:
                 isPlaying = False
-    r.getViewMatrix()
+    # r.getViewMatrix()
     r.polarCoords()
     r.camOrbit()
     r.render()
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(30)
     deltaTime = clock.get_time() / 1000
 pygame.quit()

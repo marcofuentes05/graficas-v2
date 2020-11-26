@@ -29,50 +29,42 @@ class Model(object):
         rotate = pitch * yaw * roll
         scale = glm.scale(i, self.scale)
         return translate * rotate * scale
-    
-    # def rotateYaw(self, suma):
-    #   pitch = self.rotation[0]
-    #   yaw = self.rotation[1]+suma
-    #   roll = self.rotation[2]
-    #   self.rotation = glm.vec3(pitch, yaw, roll)
-
-    # def rotatePitch(self, suma):
-    #   pitch = self.rotation[0]+suma
-    #   yaw = self.rotation[1]
-    #   roll = self.rotation[2]
-    #   self.rotation = glm.vec3(pitch, yaw, roll)
       
     def createVertBuffer(self):
         buffer = []
 
         for face in self.model.faces:
-            for i in range(3):
-                #verts
-                buffer.append(self.model.vertices[face[i][0] - 1][0])
-                buffer.append(self.model.vertices[face[i][0] - 1][1])
-                buffer.append(self.model.vertices[face[i][0] - 1][2])
-                buffer.append(1)
+            for i in range(4):
+                try:
+                    #verts
+                    buffer.append(self.model.vertices[face[i][0] - 1][0])
+                    buffer.append(self.model.vertices[face[i][0] - 1][1])
+                    buffer.append(self.model.vertices[face[i][0] - 1][2])
+                    buffer.append(1)
+                except:
+                    continue
 
-                #norms
-                buffer.append(self.model.normals[face[i][2] - 1][0])
-                buffer.append(self.model.normals[face[i][2] - 1][1])
-                buffer.append(self.model.normals[face[i][2] - 1][2])
-                buffer.append(0)
-
-                #texcoords
-                buffer.append(self.model.texcoords[face[i][1] - 1][0])
-                buffer.append(self.model.texcoords[face[i][1] - 1][1])
-
+                try:
+                    #norms
+                    buffer.append(self.model.normals[face[i][2] - 1][0])
+                    buffer.append(self.model.normals[face[i][2] - 1][1])
+                    buffer.append(self.model.normals[face[i][2] - 1][2])
+                    buffer.append(0)
+                except:
+                    continue
+                try:
+                    #texcoords
+                    buffer.append(self.model.texcoords[face[i][1] - 1][0])
+                    buffer.append(self.model.texcoords[face[i][1] - 1][1])
+                except:
+                    continue
         self.vertBuffer = np.array(buffer, dtype=np.float32)
+        self.VBO = glGenBuffers(1)  # Vertex Buffer Object
+        self.VAO = glGenVertexArrays(1)  # Vertex Array Object
 
     def renderInScene(self):
-
-        VBO = glGenBuffers(1)  # Vertex Buffer Object
-        VAO = glGenVertexArrays(1)  # Vertex Array Object
-
-        glBindVertexArray(VAO)
-
-        glBindBuffer(GL_ARRAY_BUFFER, VBO)
+        glBindVertexArray(self.VAO)
+        glBindBuffer(GL_ARRAY_BUFFER, self.VBO)
         glBufferData(GL_ARRAY_BUFFER, self.vertBuffer.nbytes,
                      self.vertBuffer, GL_STATIC_DRAW)
 
@@ -97,4 +89,4 @@ class Model(object):
         ), self.texture_surface.get_height(), 0, GL_RGB, GL_UNSIGNED_BYTE, self.texture_data)
         glGenerateMipmap(GL_TEXTURE_2D)
 
-        glDrawArrays(GL_TRIANGLES, 0, len(self.model.faces) * 3)
+        glDrawArrays(GL_QUADS, 0, len(self.model.faces) * 4)
