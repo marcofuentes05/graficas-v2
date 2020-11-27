@@ -62,6 +62,10 @@ while isPlaying:
                 r.setShaders(shaders.vertex_shader0, shaders.fragment_shader0)
             elif ev.key == pygame.K_y:
                 r.setShaders(shaders.vertex_shader, shaders.fragment_shader)
+            elif ev.key == pygame.K_z:
+                r.fov += 5
+            elif ev.key == pygame.K_x:
+                r.fov -= 5
 
     r.render()
     pygame.display.flip()

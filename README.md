@@ -1,28 +1,27 @@
-# graficas V2
-
-Repositorio usado para presentar entregas del segundo proyecto para el curso de Gráficas por computadora - UVG 2020
-
-## OpenGL 1: Cameras
+## Proyecto 4 - OpenGL
 
 Esta entrega presenta un objeto que puede ser trasladado y rotado con inputs del teclado:
-- A: Traslada a la izquierda
-- D: Traslada a la derecha
-- S: Traslada al frente
-- W: Traslada al fondo
-- Q: Rota Pitch
-- E: Rota Roll
-- R: Rota Yaw
-- ESC: Termina la ejecución
+- A: Rota la cámara a la izquierda
+- D: Rota la cámara a la derecha
+- W: Traslada la cámara hacia arriba (siempre enfocando el modelo)
+- S: Traslada la cámara hacia abajo (siempre enfocando el modelo)
+- Q: zoom out (alejamiento de camara)
+- E: zoom in (acercamiento de camara)
+- Z: Agranda el fov (similar al _zoom out_ de una camara de lente intercambiable)
+- X: Disminuye el fov (similar al _zoom in_ de una camara de lente intercambiable)
+- R: Cambia la textura del modelo actual
+- T: Cambia el shader usado actualmente a _arcoiris_
+- Y: Cambia el shader usado actualmente a _phong_
+- 1: Modo renderizado normal
+- 2: Modo renderizado en modo _Wireframe_
+- 3: Cambiar modelo actual a renderizar
 
 ## Ejecución
 
 Para ejecutar la entrega, en la consola es encesario ejecutar 
 ```
-~/ python3 openGL1.py
+~/ python3 Proyecto.py
 ```
 
 ![Comandos](./Comandos.png "Comandos")
 
-## Resultados
-
-![Resultado](./Resultado.png "Resultado")

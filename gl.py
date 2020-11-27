@@ -17,7 +17,8 @@ class Renderer(object):
         self.camPosition = glm.vec3(0,0,0)
         self.camRotation = glm.vec3(0,0,0)
         self.pointLight = glm.vec4(0,0,0,0)
-        self.projection = glm.perspective(glm.radians(60), self.width / self.height, 0.1, 1000)
+        self.fov = 60
+        self.projection = glm.perspective(glm.radians(self.fov), self.width / self.height, 0.1, 1000)
         self.viewMatrix = self.getViewMatrix()
         self.angle = 90
         self.index = 0
@@ -62,6 +63,9 @@ class Renderer(object):
         glClearColor(0.2, 0.2, 0.2, 1)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT )
         if self.active_shader:
+
+            self.projection = glm.perspective(glm.radians(self.fov), self.width / self.height, 0.1, 1000)
+
             glUniformMatrix4fv(glGetUniformLocation(self.active_shader, "view"), 1, GL_FALSE, glm.value_ptr( self.viewMatrix ))
             glUniformMatrix4fv(glGetUniformLocation(self.active_shader, "projection"), 1, GL_FALSE, glm.value_ptr( self.projection ))
             glUniform4f(glGetUniformLocation(self.active_shader, "light"), self.pointLight.x, self.pointLight.y, self.pointLight.z, self.pointLight.w)
