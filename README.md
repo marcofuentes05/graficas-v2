@@ -1,6 +1,6 @@
 ## Proyecto 4 - OpenGL
 
-Esta entrega presenta un objeto que puede ser trasladado y rotado con inputs del teclado:
+Esta entrega presenta un render que es capaz de cargar modelos OBJ y acepta los siguientes inputs de teclado:
 - A: Rota la cámara a la izquierda
 - D: Rota la cámara a la derecha
 - W: Traslada la cámara hacia arriba (siempre enfocando el modelo)
