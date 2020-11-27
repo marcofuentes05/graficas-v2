@@ -43,7 +43,6 @@ void main()
 }
 """
 
-
 fragment_shader0 ="""
 #version 460
 
@@ -71,3 +70,4 @@ void main()
     diffuseColor =  vertexColor * texture(tex, vertexTexcoords);
 }
 """
+

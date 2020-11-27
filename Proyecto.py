@@ -18,13 +18,12 @@ r = Renderer(screen)
 r.camPosition.z = 5
 r.camPosition.y= 5
 
-r.pointLight.z = 5
+r.pointLight.z = 500
 r.pointLight.y = 5
 
 r.setShaders(shaders.vertex_shader, shaders.fragment_shader)
 rotateSpeed = 80
-r.modelList.append(Model('./Assets/OBJs/coca.obj', './Assets/Textures/green.jpg', 4))
-r.modelList[0].scale = glm.vec3(0.01, 0.01, 0.01)
+r.modelList.append(Model('./Assets/OBJs/aircraft.obj', './Assets/Textures/green.jpg', 4))
 r.modelList.append(Model('./Assets/OBJs/model.obj', './Assets/Textures/green.jpg', 3))
 r.modelList.append(Model('./Assets/OBJs/helmet.obj', './Assets/Textures/green.jpg', 3))
 r.modelList.append(Model('./Assets/OBJs/planta.obj', './Assets/Textures/planta.jpg', 4))
@@ -40,13 +39,11 @@ while isPlaying:
     if keys[K_s]:
         r.camPosition.y -= 10 * deltaTime
     if keys[K_q]:
-        if (r.camPosition.z <= 10):
-            r.camPosition.z +=1 * deltaTime
+        if (r.camPosition.z <= 100):
+            r.camPosition.z +=10 * deltaTime
     if keys[K_e]:
         if (2 <= r.camPosition.z):
-            r.camPosition.z -= 1 * deltaTime
-    # if keys[K_r]:
-    #     r.modelList[r.index].textureIndex = (r.modelList[r.index].textureIndex + 1)  % 4
+            r.camPosition.z -= 10 * deltaTime
     for ev in pygame.event.get():
         if ev.type == pygame.QUIT:
             isPlaying = False
@@ -61,8 +58,11 @@ while isPlaying:
                 isPlaying = False
             elif ev.key == pygame.K_r:
                 r.modelList[r.index].textureIndex = (r.modelList[r.index].textureIndex + 1)  % 4
-    r.polarCoords()
-    r.camOrbit()
+            elif ev.key == pygame.K_t:
+                r.setShaders(shaders.vertex_shader0, shaders.fragment_shader0)
+            elif ev.key == pygame.K_y:
+                r.setShaders(shaders.vertex_shader, shaders.fragment_shader)
+
     r.render()
     pygame.display.flip()
     clock.tick(30)

@@ -3,6 +3,7 @@ from OpenGL.GL.shaders import compileProgram, compileShader
 import glm
 import numpy as np
 import math
+import pygame
 
 class Renderer(object):
     def __init__(self, screen):
@@ -56,6 +57,8 @@ class Renderer(object):
         glUseProgram(self.active_shader)
 
     def render(self):
+        self.polarCoords()
+        self.camOrbit()
         glClearColor(0.2, 0.2, 0.2, 1)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT )
         if self.active_shader:
